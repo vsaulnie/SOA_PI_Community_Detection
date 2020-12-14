@@ -9,6 +9,7 @@ Continuous integration : Jenkins 2.222.3
 Serveur : Tomcat 7  
 Microservice framework : Spring boot  
 
+
 ## Intent
 Implement a SOA/Microservice based application related to integration project of 5 SDBD.  
 The project is about community detection on large graph.  
@@ -19,4 +20,18 @@ The objective is to make a complete comparision of main graph storage and proces
 
 ## Architecture
 
-![Latest Architecture](https://github.com/vsaulnie/SOA_PI_Community_Detection/doc/architecture.png)
+![Latest Architecture](https://github.com/vsaulnie/SOA_PI_Community_Detection/blob/main/doc/architecture.png)
+
+
+## Launch commands
+
+### Jenkins 
+`java -jar jenkins.war --httpPort=9090`
+
+
+## Project Management 
+See all details in `project_management/` 
+### Agile software development/Scrum/INVEST 
+
+
+### JIRA 
