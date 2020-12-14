@@ -23,6 +23,13 @@ The objective is to make a complete comparision of main graph storage and proces
 ![Latest Architecture](https://github.com/vsaulnie/SOA_PI_Community_Detection/blob/main/doc/architecture.png)
 
 
+## Sample Graphs
+All graphs can be find in /graphs
+They are found on snap.stanford.edu/mappr/data.html: 
+- email (directed n=1005 ; e=25 571)
+- Amazon (undirected n=334 863 ; e=925 872)
+- Friendster (undirected n=65 608 366 ; e=1 806 067 135)
+
 ## Launch commands
 
 ### Jenkins 
