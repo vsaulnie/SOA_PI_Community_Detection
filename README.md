@@ -27,3 +27,11 @@ The objective is to make a complete comparision of main graph storage and proces
 
 ### Jenkins 
 `java -jar jenkins.war --httpPort=9090`
+
+
+## Project Management 
+See all details in `project_management/` 
+### Agile software development/Scrum/INVEST 
+
+
+### JIRA 
