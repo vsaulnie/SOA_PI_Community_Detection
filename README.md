@@ -16,7 +16,7 @@ The project is about community detection on large graph.
 The objective is to make a complete comparision of main graph storage and processing systems. Especially while running community detection algorithms.  
 
 ## Specs
-1. Take in input a .txt graph file (a file downloaded on http://snap.stanford.edu/data/) and translate it to be usable on Neo4J and Giraph  
+1. Take in input a .txt graph file (a file downloaded on http://snap.stanford.edu/mappr/data.html) and translate it to be usable on Neo4J and Giraph  
 2. Add translated graphs at the right place on Neo4J and Giraph's dockers  
 3. Launch execution of choosen algorithms on Neo4J and Giraph  
 4. Get executions results in a database  
