@@ -20,7 +20,7 @@ The objective is to make a complete comparision of main graph storage and proces
 
 ## Architecture
 
-![Latest Architecture](https://github.com/vsaulnie/SOA_PI_Community_Detection/blob/main/doc/architecture.png)
+![Latest Architecture](https://github.com/vsaulnie/SOA_PI_Community_Detection/blob/main/doc/architecture.jpg)
 
 
 ## Sample Graphs
