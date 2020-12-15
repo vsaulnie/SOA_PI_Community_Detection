@@ -1,0 +1,3 @@
+sudo docker build -t ubuntu:java8 ./ubuntu_java8
+sudo docker build -t hadoop:single ./hadoop_single
+sudo docker build -t giraph:sdbd ./giraph_sdbd
