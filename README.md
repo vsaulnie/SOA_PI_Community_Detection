@@ -16,7 +16,13 @@ The project is about community detection on large graph.
 The objective is to make a complete comparision of main graph storage and processing systems. Especially while running community detection algorithms.  
 
 ## Specs
-- 
+    1. Prendre en entrée un graphe au format txt (format téléchargé via le site de Standford) et être capable de le traduire au bon format pour Neo4J et Giraph  
+    2. Ajouter des graphes traduits aux bon endroits sur les Docker de Neo4J et Giraph  
+    3. Lancer des exécutions d’algorithmes choisis sur Neo4J et Giraph  
+    4. Récupérer les résultats des exécutions dans une base de donnée (ou pseudo base)  
+    5. Charger des graphes au format txt depuis un url local ou web  
+    6. Initier les ordres de lancement d’exécution directement depuis le frontend  
+    7. Afficher les résultats d’exécution sur le frontend  
 
 ## Architecture
 
