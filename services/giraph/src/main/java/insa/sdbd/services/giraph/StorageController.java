@@ -1,8 +1,7 @@
 package insa.sdbd.services.giraph;
 
-import insa.sdbd.services.giraph.Storage;
-import insa.sdbd.services.giraph.dockercom.DockerExec;
-import insa.sdbd.services.giraph.dockercom.MkdirHDFS;
+import insa.sdbd.services.giraph.dockerprocess.DockerExec;
+import insa.sdbd.services.giraph.dockerprocess.MkdirHDFS;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.MediaType;
 

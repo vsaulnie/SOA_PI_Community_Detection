@@ -7,6 +7,4 @@ public class Computation {
 	private String edgeOutputFormat = null;
 	private String customArguments = null;
 	private String algorithm = null;
-
-
 }
