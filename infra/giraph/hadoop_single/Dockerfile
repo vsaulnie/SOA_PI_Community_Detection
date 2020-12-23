@@ -22,9 +22,10 @@ RUN 	groupadd hadoop && \
 	chmod +x /usr/bin/hadoop_stop && \
 	chmod +x /bin/startup && \
 	chown hduser:hadoop /usr/bin/hadoop_start && \
-	chown hduser:hadoop /usr/bin/hadoop_start && \	
+	chown hduser:hadoop /usr/bin/hadoop_start && \
 	apt-get install openssh-server -y && \
 	apt-get install sudo -y
+
 USER hduser
 WORKDIR /home/hduser
 RUN 	echo 'export HADOOP_HOME=/usr/local/hadoop' >> /home/hduser/.bashrc && \

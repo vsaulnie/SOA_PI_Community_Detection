@@ -1,7 +1,7 @@
 package insa.sdbd.services.giraph;
 
 import insa.sdbd.services.giraph.dockerprocess.DockerExec;
-import insa.sdbd.services.giraph.dockerprocess.MkdirHDFS;
+import insa.sdbd.services.giraph.hdprocess.MkdirHDFS;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.MediaType;
 
@@ -17,8 +17,6 @@ public class StorageController {
 		return storage;
 	}
 
-
-
 	@GetMapping(path = "/", produces = MediaType.TEXT_PLAIN_VALUE)
 	public String GetGraph(@RequestParam String user,@RequestParam String name){
 		String res = "You are asking for graph "+name+" in user "+user;
@@ -29,9 +27,8 @@ public class StorageController {
 	@PostMapping(path = "/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Storage RegisterStorage(@RequestBody Storage storage) throws IOException, InterruptedException {
 		MkdirHDFS mkdirHDFS = new MkdirHDFS(storage.getUserStore());
-		DockerExec dockerExec = new DockerExec("hduser",mkdirHDFS.getCmd(),"giraph");
-		System.out.println(dockerExec.repr());
-		int r = dockerExec.runProcess();
+		System.out.println("[Command] "+mkdirHDFS.repr());
+		int r = mkdirHDFS.runProcess();
 		System.out.println("Exit code : "+r);
 		return storage;
 	}

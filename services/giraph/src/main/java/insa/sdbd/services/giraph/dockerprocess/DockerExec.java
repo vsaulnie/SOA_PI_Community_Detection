@@ -1,5 +1,7 @@
 package insa.sdbd.services.giraph.dockerprocess;
 
+import insa.sdbd.services.giraph.ProcessCommand;
+
 import java.util.LinkedList;
 import java.util.List;
 
