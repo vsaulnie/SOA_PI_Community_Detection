@@ -1,7 +1,7 @@
 sudo docker run -itd --name giraph -p8888:8888 giraph:sdbd
 sudo docker exec -d giraph bash startup
 sudo docker exec -u hduser -e HADOOP_HOME=/usr/local/hadoop giraph bash hadoop namenode -format
-sudo docker exec -d -u hduser giraph bash ssh -o StrictHostKeyChecking=no hduser@hdnode01
-sudo docker exec -d -u hduser giraph bash /usr/local/hadoop/bin/start-dfs.sh
-sudo docker exec -d -u hduser giraph bash /usr/local/hadoop/bin/start-mapred.sh
+sudo docker exec -d -u hduser giraph ssh -o StrictHostKeyChecking=no hduser@hdnode01
+sudo docker exec -u hduser giraph bash /usr/local/hadoop/bin/start-dfs.sh
+sudo docker exec -u hduser giraph bash /usr/local/hadoop/bin/start-mapred.sh
 sudo docker exec -d -u hduser -e HADOOP_HOME=/usr/local/hadoop giraph java -jar /home/hduser/SpringService.jar

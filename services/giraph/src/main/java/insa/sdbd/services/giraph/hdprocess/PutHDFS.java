@@ -1,24 +1,27 @@
 package insa.sdbd.services.giraph.hdprocess;
 
+import insa.sdbd.services.giraph.ProcessCommand;
+
 import java.util.LinkedList;
 import java.util.List;
 
-public class PutHDFS {
-	private String srcLocal;
-	private String destHDFS;
+public class PutHDFS implements ProcessCommand {
+	private String fileFrom;
+	private String fileTo;
 
-	public PutHDFS(String srcLocal, String destHDFS) {
-		this.srcLocal = srcLocal;
-		this.destHDFS = destHDFS;
+	public PutHDFS(String fileFrom, String fileTo) {
+		this.fileFrom = fileFrom;
+		this.fileTo = fileTo;
 	}
 
-	public List<String> getCmd(){
+	@Override
+	public List<String> getCmd() {
 		List<String> res = new LinkedList<>();
 		res.add("hadoop");
 		res.add("fs");
 		res.add("-put");
-		res.add(srcLocal);
-		res.add(destHDFS);
+		res.add(fileFrom);
+		res.add(fileTo);
 		return res;
 	}
 }
