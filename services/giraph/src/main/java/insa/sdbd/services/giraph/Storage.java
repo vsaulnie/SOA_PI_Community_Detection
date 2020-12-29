@@ -3,7 +3,7 @@ package insa.sdbd.services.giraph;
 public class Storage {
 	private String user;
 	private String graph;
-	
+
 	public String getUser() {
 		return user;
 	}
