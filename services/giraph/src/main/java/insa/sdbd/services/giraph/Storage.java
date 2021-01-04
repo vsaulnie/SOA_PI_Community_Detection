@@ -1,41 +1,22 @@
 package insa.sdbd.services.giraph;
 
 public class Storage {
-	private String userStore;
-	private String graphLabel;
-	private String vif = null;
-	private String eif = null;
+	private String user;
+	private String graph;
 
-
-	public String getUserStore() {
-		return userStore;
+	public String getUser() {
+		return user;
 	}
 
-	public void setUserStore(String userStore) {
-		this.userStore = userStore;
+	public void setUser(String user) {
+		this.user = user;
 	}
 
-	public String getGraphLabel() {
-		return graphLabel;
+	public String getGraph() {
+		return graph;
 	}
 
-	public void setGraphLabel(String graphLabel) {
-		this.graphLabel = graphLabel;
-	}
-
-	public String getVif() {
-		return vif;
-	}
-
-	public void setVif(String vif) {
-		this.vif = vif;
-	}
-
-	public String getEif() {
-		return eif;
-	}
-
-	public void setEif(String eif) {
-		this.eif = eif;
+	public void setGraph(String graph) {
+		this.graph = graph;
 	}
 }
