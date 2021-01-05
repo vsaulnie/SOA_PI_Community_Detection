@@ -1,4 +1,4 @@
-# SOA_PI_Community_Detection - Storer MicroService
+# SOA_PI_Community_Detection - Config Client MicroService
 A microservice based application for the comparision of community detection solutions on large graphs
 
 ## Developpement setup
@@ -10,5 +10,6 @@ Serveur : Tomcat 7
 Microservice framework : Spring boot  
 
 ## Intent
-Microservice compiling all requests report from all solutions.
+Microservice that enables to get all global variables defined in the config Server
+.
 
