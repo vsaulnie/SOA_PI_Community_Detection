@@ -1,3 +1,0 @@
-#!/bin/bash
-$HADOOP_HOME/bin/stop-mapred.sh
-$HADOOP_HOME/bin/stop-dfs.sh

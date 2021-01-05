@@ -1,4 +1,0 @@
-#start ssh server and register hostnames
-service ssh start
-echo '127.0.0.1    localhost' >> /etc/hosts
-echo '127.0.0.1    hdnode01' >> /etc/hosts
