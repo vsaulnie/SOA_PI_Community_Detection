@@ -8,7 +8,7 @@ JDK : Java 8
 Continuous integration : Jenkins 2.222.3  
 Serveur : Tomcat 7  
 Microservice framework : Spring boot  
-Base Git repository : https://github.com/vsaulnie/Config-1.git
+Plugin : Eureka
 
 ## Intent
 Microservice that helps to discover and label each microservice of the system.
