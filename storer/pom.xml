@@ -11,6 +11,7 @@
 	<groupId>insa.sdbd.community</groupId>
 	<artifactId>storer</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
 	<name>storer</name>
 	<description>Storer service for PI project</description>
 
