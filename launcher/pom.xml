@@ -11,6 +11,7 @@
 	<groupId>insa.sdbd.community</groupId>
 	<artifactId>launcher</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
 	<name>launcher</name>
 	<description>Launcher microservice for PI project</description>
 
