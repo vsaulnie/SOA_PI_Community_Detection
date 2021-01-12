@@ -11,6 +11,7 @@
 	<groupId>fr.insa.ms.server.config</groupId>
 	<artifactId>ConfigClient</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
 	<name>ConfigClient</name>
 	<description>Config Client Microservice</description>
 
