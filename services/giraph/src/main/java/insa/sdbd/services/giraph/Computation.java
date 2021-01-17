@@ -31,4 +31,13 @@ public class Computation {
 
 	public Computation() {
 	}
+
+	@Override
+	protected Computation clone() {
+		Computation computation = new Computation();
+		computation.setUser(this.user);
+		computation.setGraph(this.graph);
+		computation.setAlgorithm(this.algorithm);
+		return computation;
+	}
 }

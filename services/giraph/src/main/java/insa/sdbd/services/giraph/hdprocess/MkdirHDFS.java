@@ -18,7 +18,7 @@ public class MkdirHDFS implements ProcessCommand {
 		res.add("hadoop");
 		res.add("fs");
 		res.add("-mkdir");
-		res.add("/user/hduser/" + userStore);
+		res.add(userStore);
 		return res;
 	}
 }
