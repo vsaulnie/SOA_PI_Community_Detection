@@ -21,7 +21,7 @@ public class StorageController {
 
 	@PostMapping(path = "/register/{user}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Storage RegisterStorage(@PathVariable String user) throws IOException, InterruptedException {
-		MkdirHDFS mkdirHDFS = new MkdirHDFS(user);
+		MkdirHDFS mkdirHDFS = new MkdirHDFS(BASE_HDFS_DIR+user);
 		System.out.println("[Command] "+mkdirHDFS.repr());
 		int r = mkdirHDFS.runProcess();
 		Path path = Paths.get(BASE_UPLOAD_DIR +user);

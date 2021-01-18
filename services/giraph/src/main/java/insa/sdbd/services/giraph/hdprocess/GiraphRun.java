@@ -8,9 +8,10 @@ import java.util.List;
 
 public class GiraphRun implements ProcessCommand {
 	public static final String SCC_COMPUTATION = "insa.sdbd.community.scc.SCCForwardComputation";
-	public static final String SCC_MASTER_COMPUTE = "insa.sdbd.community.scc.SCCMasterComputation";
+	public static final String SCC_MASTER_COMPUTE = "insa.sdbd.community.scc.SCCMasterCompute";
 	public static final String LPA_COMPUTATION ="insa.sdbd.community.lpa.LPAComputation";
 	public static final String LPA_MASTER_COMPUTE = "insa.sdbd.community.lpa.LPAMasterCompute";
+	public static final String ID_COMPUTATION = "insa.sdbd.community.labo.AssignArgValueComputation";
 
 	public static final String VIF_JLLD = "insa.sdbd.community.formats.vif.JsonLongLongDirectedDouble";
 	public static final String VOF_LL = "insa.sdbd.community.formats.vof.VertexWithLongValueTextOutput";
@@ -42,6 +43,8 @@ public class GiraphRun implements ProcessCommand {
 		res.jar = GRAPHARI;
 		res.giraphRunner = GIRAPH_RUNNER;
 		res.w = "1";
+		res.vif = VIF_JLLD;
+		res.vof = VOF_LL;
 		return res;
 	}
 	public static GiraphRun FromComputation(Computation computationObj,String baseHDFSDir){
@@ -50,15 +53,15 @@ public class GiraphRun implements ProcessCommand {
 			case "scc":
 				res.computation = SCC_COMPUTATION;
 				res.mc = SCC_MASTER_COMPUTE;
-				res.vif = VIF_JLLD;
-				res.vof = VOF_LL;
 				break;
 			case "lpa":
 				res.computation = LPA_COMPUTATION;
 				res.mc = LPA_MASTER_COMPUTE;
-				res.vif = VIF_JLLD;
-				res.vof = VOF_LL;
+				res.ca = "insa.MAX_STEPS=6";
 				break;
+			case "id":
+				res.computation = ID_COMPUTATION;
+				res.ca="insa.ASSIGNED=666";
 			default:
 				break;
 		}

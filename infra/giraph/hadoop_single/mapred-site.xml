@@ -21,7 +21,7 @@
 
 	<property>
 	<name>mapreduce.job.counters.limit</name>
-	<value>1500</value>
+	<value>15000</value>
 	</property>
 
 </configuration>
