@@ -6,24 +6,25 @@ import java.io.IOException;
 
 public class Neo4JManager {
 
-	public static void saveGraphLocally(String fName , String res) throws Neo4JException {
+	public static String sendQuery(String statment) {
+		String body = "{\n" + 
+				"  \"statements\" : [ {\n" + 
+				"    \"statement\" : \""+statment+"\"\n" + 
+				"  } ]\n" + 
+				"}";
 		
-		try {
-		      File myObj = new File("csv/"+fName);
-		      myObj.createNewFile();
-		      FileWriter myWriter = new FileWriter(myObj);
-		      myWriter.write(res);
-		      myWriter.close();
-		      
-		    } catch (IOException e) {
-		      throw new Neo4JException();
-		    }
-		
+		//Post to StorerMS each query stats : execTime, name, details, Neo4j, input data, query details, return details...
+		return null;
 	}
 
-	public static void initLoadCSVRequest(String fName) {
-		// TODO Auto-generated method stub
+	public static String buildQuery(String statment) {
+		String body = "{\n" + 
+				"  \"statements\" : [ {\n" + 
+				"    \"statement\" : \""+statment+"\"\n" + 
+				"  } ]\n" + 
+				"}";
 		
+		return body;
 	}
 
 }

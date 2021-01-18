@@ -13,12 +13,16 @@ public class Json {
 	public void add(String key, String value) {
 		json.add("\""+key+"\":\""+value+"\"");
 	}
+	public void add(String key, Json value) {
+		json.add("\""+key+"\":"+value.toString());
+	}
 	public String toString() {
 		String inter="";
 		for(String cp : json) {
 			inter+="  "+cp+sep;
 		}
-		inter = inter.substring(0, inter.length() - sep.length());  
+		if(inter.length()>sep.length())
+			inter = inter.substring(0, inter.length() - sep.length());  
 		return this.deb+inter+this.fin;
 	}
 

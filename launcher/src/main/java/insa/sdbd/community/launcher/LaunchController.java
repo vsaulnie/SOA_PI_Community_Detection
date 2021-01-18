@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -12,18 +13,21 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.zip.GZIPInputStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.InputStreamSource;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -32,6 +36,7 @@ import org.springframework.web.client.RestTemplate;
 public class LaunchController {
 	@Autowired
 	private RestTemplate restTemplate;
+	private String Neo4JAddress;
 
 	@GetMapping(path = "/pong", produces = MediaType.TEXT_PLAIN_VALUE)
 	public String getPong(){
@@ -80,8 +85,8 @@ public class LaunchController {
 		
 		try {
 			String fName=url.getPath().substring(url.getPath().lastIndexOf("/")+1, url.getPath().lastIndexOf("."))+".csv";
-			Neo4JManager.saveGraphLocally(fName,res);
-			Neo4JManager.initLoadCSVRequest(fName);
+			FileManager.saveGraphLocally(fName,res);
+			//Neo4JManager.initLoadCSVRequest(fName);
 			//prepareForGiraph(res);
 			
 		}catch(Neo4JException neo) {
@@ -152,5 +157,66 @@ public class LaunchController {
 			return new ResponseEntity<>("error occurred", HttpStatus.INTERNAL_SERVER_ERROR);	
 		} 
 	}
-				
+	
+	// Gets all CSV files loaded in this MS
+	@GetMapping(path = "/displayLoadedCSV/", produces = MediaType.TEXT_PLAIN_VALUE)
+	public String getAllLoadedCSV(){
+		String status = "KO";
+		Json res = new Json();
+		String[] pathnames;
+		File f = new File("./csv");
+		if(f!=null) {
+			// This filter will only include files ending with .py
+			FilenameFilter filter = new FilenameFilter() {
+			        @Override
+			        public boolean accept(File f, String name) {
+			            return name.endsWith(".csv");
+			        }
+			    };
+			// This is how to apply the filter
+			pathnames = f.list(filter);
+			int i = 1;
+			for (String pathname : pathnames) {
+	        	res.add("file"+i, pathname); 
+	        	i++;
+	        }
+			status="OK";
+		}
+		System.out.println(res);
+		Json json = new Json();
+	    json.add("status", status);
+	    json.add("response", res);
+		return json.toString();
+	}
+	
+	// tool to send a query to Neo4J in Cipher language encoded with URIEncoded
+	// A query to load a graph to Neo4j is required with LOADCSV
+	@PostMapping(path = "/sendQuery/Neo4j", produces = MediaType.TEXT_PLAIN_VALUE)
+	public String sendQueryToNeo4j(@PathVariable("statment") String statmentEncoded) {
+		//1° BUILD QUERY - PREPARE POST MESSAGE
+		String statment;
+		try {
+            statment = URLDecoder.decode(statmentEncoded, StandardCharsets.UTF_8.toString());
+        } catch (UnsupportedEncodingException ex) {
+            throw new RuntimeException(ex.getCause());
+        }
+		String body = Neo4JManager.buildQuery(statment);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+		HttpEntity<String> httpBodyHeader = new HttpEntity<String>(body,headers);
+		
+		//2° GET TIME - SEND QUERY - STOP TIME
+		String queryRes = restTemplate.postForObject("http://"+Neo4JAddress+"db/data/transaction/commit",httpBodyHeader, String.class);
+		
+		//3° INTERPRETATION OF RESULT
+		
+		//4° BUILD POST MESSAGE TO STORERMS 
+		
+		//5° SEND TI
+		
+		return Neo4JManager.sendQuery(statment);
+	}
+	
+	
 }
