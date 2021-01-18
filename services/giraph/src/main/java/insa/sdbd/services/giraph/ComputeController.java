@@ -34,7 +34,7 @@ public class ComputeController {
 	}
 
 	@GetMapping("/{user}/{graph}/{algorithm}")
-	public ResponseEntity<String> GetResult(@PathVariable String user, @PathVariable Stirng graph, @PathVariable String algorithm) {
+	public ResponseEntity<String> GetResult(@PathVariable String user, @PathVariable String graph, @PathVariable String algorithm) {
 		Computation computation = new Computation();
 		computation.setUser(user);
 		computation.setGraph(graph);
