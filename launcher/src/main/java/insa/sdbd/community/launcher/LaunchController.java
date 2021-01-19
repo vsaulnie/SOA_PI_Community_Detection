@@ -35,17 +35,19 @@ public class LaunchController {
 	}
 
 	//It accepts GZ file on distant or local url
-	@PostMapping(path = "/loadGZGraphFromURL", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public String getGZGraph(@RequestBody DownloadInformation information) {
+	@PostMapping(path = "/loadGraphFromURL", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public String getGraph(@RequestBody DownloadInformation information) {
 		String res = "No graph loaded (csv)";
 		String giraphRes = "No graph loaded (jlld)";
 		String status = "KO";
-		String decodedURL;
+		/*String decodedURL;
 		try {
 			decodedURL = URLDecoder.decode(information.getUrl(), StandardCharsets.UTF_8.toString());
+			
 		} catch (UnsupportedEncodingException ex) {
 			throw new RuntimeException(ex.getCause());
-		}
+		}*/
+		String decodedURL = information.getUrl();
 
 		URL url = null;
 		try {
@@ -54,30 +56,51 @@ public class LaunchController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		try {
-			GZIPInputStream gzipStream = new GZIPInputStream(url.openStream());
-			BufferedReader br = new BufferedReader(new InputStreamReader(gzipStream));
-			res = "";
-			String line = null;
-			GiraphFileBuilder giraphFileBuilder = new GiraphFileBuilder();
-			while ((line = br.readLine()) != null) {
-				res += line.replaceAll(" ", ",") + "\n";
-				giraphFileBuilder.readTxtLine(line);
-				status = "Locally loaded";
+		
+		String mode = information.getMode();
+		System.out.println(mode);
+		if(mode.equalsIgnoreCase("gz")) {
+			try {
+				System.out.println("Mode GZ ");
+				GZIPInputStream gzipStream = new GZIPInputStream(url.openStream());
+				BufferedReader br = new BufferedReader(new InputStreamReader(gzipStream));
+				res = "";
+				String line = null;
+				GiraphFileBuilder giraphFileBuilder = new GiraphFileBuilder();
+				while ((line = br.readLine()) != null) {
+					res += line.replaceAll(" ", ",") + "\n";
+					giraphFileBuilder.readTxtLine(line);
+				}
+				giraphRes = giraphFileBuilder.toRawString();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			giraphRes = giraphFileBuilder.toRawString();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
+		else {
+			System.out.println("Mode not GZ");
+			try {
+				BufferedReader br = new BufferedReader(
+						new InputStreamReader(url.openStream()));
+				res="";
+				String line = null;
+				GiraphFileBuilder giraphFileBuilder = new GiraphFileBuilder();
+				while ((line = br.readLine()) != null) {
+					res += line + "\n";
+					giraphFileBuilder.readTxtLine(line);
+				}
+				giraphRes = giraphFileBuilder.toRawString();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		status = "Locally loaded";
 
 		try {
 			String fName = url.getPath().substring(url.getPath().lastIndexOf("/") + 1, url.getPath().lastIndexOf(".")) + ".csv";
 			FileManager.saveGraphLocally(fName, res, "csv");
 			FileManager.saveGraphLocally(fName, giraphRes, "jlld");
-			//Neo4JManager.initLoadCSVRequest(fName);
-			//prepareForGiraph(res);
 
 		} catch (Neo4JException neo) {
 			neo.printStackTrace();
@@ -86,43 +109,6 @@ public class LaunchController {
 		json.add("status", status);
 		json.add("response", res);
 		return json.toString();
-	}
-
-	//It accepts GZ file on distant or local url
-	@PostMapping(path = "/loadTXTGraphFromURL", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public String getTXTGraph(@RequestBody DownloadInformation information) {
-		String res = "No csv";
-		String giraphRes = "No jlld";
-		String decodedURL;
-		try {
-			decodedURL = URLDecoder.decode(information.getUrl(), StandardCharsets.UTF_8.toString());
-		} catch (UnsupportedEncodingException ex) {
-			throw new RuntimeException(ex.getCause());
-		}
-
-		URL url = null;
-		try {
-			url = new URL(decodedURL);
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		try {
-			BufferedReader br = new BufferedReader(
-					new InputStreamReader(url.openStream()));
-			GiraphFileBuilder giraphFileBuilder = new GiraphFileBuilder();
-			String line = null;
-			while ((line = br.readLine()) != null) {
-				res += line + "\n";
-
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return res;
-
 	}
 
 	// Gets automatically the CSV file asked if exits
@@ -179,16 +165,12 @@ public class LaunchController {
 
 	// tool to send a query to Neo4J in Cipher language encoded with URIEncoded
 	// A query to load a graph to Neo4j is required with LOADCSV
-	@PostMapping(path = "/sendQuery/Neo4j", produces = MediaType.TEXT_PLAIN_VALUE)
-	public String sendQueryToNeo4j(@PathVariable("statment") String statmentEncoded) {
+	@PostMapping(path = "/sendQuery/Neo4j", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public String sendQueryToNeo4j(@RequestBody CipherQuery_Neo4j cipherQuery) {
 		//1° BUILD QUERY - PREPARE POST MESSAGE
-		String statment;
-		try {
-			statment = URLDecoder.decode(statmentEncoded, StandardCharsets.UTF_8.toString());
-		} catch (UnsupportedEncodingException ex) {
-			throw new RuntimeException(ex.getCause());
-		}
+		String statment = cipherQuery.getStatment();
 		String body = Neo4JManager.buildQuery(statment);
+		
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
