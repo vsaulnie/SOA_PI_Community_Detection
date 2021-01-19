@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.InputStreamSource;
 import org.springframework.http.*;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -21,7 +23,7 @@ public class LaunchController {
 	@Autowired
 	private RestTemplate restTemplate;
 	private String Neo4JAddress;
-
+	private String giraphAddress = "http://giraphServicePI/";
 	@GetMapping(path = "/pong", produces = MediaType.TEXT_PLAIN_VALUE)
 	public String getPong() {
 		return "Pong from Launcher Service";
@@ -202,6 +204,36 @@ public class LaunchController {
 		//5° SEND TI
 
 		return Neo4JManager.sendQuery(statment);
+	}
+
+	@PostMapping(path = "/uploadGraph/Giraph",consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Object> postUploadToGiraph(@RequestBody UploadInformation information){
+		//Register in giraph storage
+		restTemplate.postForEntity(giraphAddress+"storage/register/launcherMS",null,Object.class);
+		//Upload file via http form data
+		//From Baelrung tutorial https://www.baeldung.com/spring-rest-template-multipart-upload
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+		MultiValueMap<String, Object> body
+				= new LinkedMultiValueMap<>();
+		body.add("file", new File("./jlld/"+information.getFilename()));
+		HttpEntity<MultiValueMap<String, Object>> requestEntity
+				= new HttpEntity<>(body, headers);
+
+		String concise = information.getFilename().split(".")[0];
+
+		RestTemplate restTemplate = new RestTemplate();
+		Object resp = restTemplate.postForEntity(giraphAddress+"storage/upload/launcherMS/"+concise, requestEntity, Object.class);
+		return ResponseEntity.ok(resp);
+	}
+
+	@PostMapping(path = "/sendQuery/Giraph", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Object> postLaunchGiraphComputation(@RequestBody GiraphQuery giraphQuery){
+		String concise = giraphQuery.getGraph().split(".")[0];
+		giraphQuery.setGraph(concise);
+		giraphQuery.setUser("launcherMS");
+		Object resp = restTemplate.postForEntity(giraphAddress+"compute/",giraphQuery,Object.class);
+		return ResponseEntity.ok(resp);
 	}
 
 
