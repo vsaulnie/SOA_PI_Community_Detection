@@ -14,6 +14,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.zip.GZIPInputStream;
 
@@ -22,7 +24,7 @@ import java.util.zip.GZIPInputStream;
 public class LaunchController {
 	@Autowired
 	private RestTemplate restTemplate;
-	private String Neo4JAddress;
+	private String Neo4JAddress = "http://MockNeo4j/";
 	private String giraphAddress = "http://giraphServicePI/";
 	@GetMapping(path = "/pong", produces = MediaType.TEXT_PLAIN_VALUE)
 	public String getPong() {
@@ -165,27 +167,38 @@ public class LaunchController {
 
 	// tool to send a query to Neo4J in Cipher language encoded with URIEncoded
 	// A query to load a graph to Neo4j is required with LOADCSV
-	@PostMapping(path = "/sendQuery/Neo4j", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public String sendQueryToNeo4j(@RequestBody CipherQuery_Neo4j cipherQuery) {
+	@PostMapping(path = "/sendQuery/Neo4j", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Object> sendQueryToNeo4j(@RequestBody CipherQuery_Neo4j cipherQuery) {
+		String status = "KO";
 		//1° BUILD QUERY - PREPARE POST MESSAGE
 		String statment = cipherQuery.getStatment();
+		System.out.println("sendQuery/Neo4j called with :"+statment);
 		String body = Neo4JManager.buildQuery(statment);
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 		HttpEntity<String> httpBodyHeader = new HttpEntity<String>(body, headers);
 
 		//2° GET TIME - SEND QUERY - STOP TIME
-		String queryRes = restTemplate.postForObject("http://" + Neo4JAddress + "db/data/transaction/commit", httpBodyHeader, String.class);
-
+		Instant start = Instant.now();
+		
+		ResponseEntity<String> queryRes = restTemplate.postForEntity(Neo4JAddress + "db/data/transaction/commit", httpBodyHeader, String.class);
+		
+		Instant end = Instant.now();
+		Long timeElapsed = Duration.between(start, end).toMillis();
+		
 		//3° INTERPRETATION OF RESULT
-
-		//4° BUILD POST MESSAGE TO STORERMS 
-
-		//5° SEND TI
-
-		return Neo4JManager.sendQuery(statment);
+		body = Neo4JManager.responseInterpreter(timeElapsed,cipherQuery ,queryRes);
+		//4° BUILD POST MESSAGE TO STORER MS 
+		httpBodyHeader = new HttpEntity<String>(body, headers);
+		//5° SEND TO STORERMS
+		ResponseEntity<String>  postStorerResp=  restTemplate.postForEntity("http://storerServicePI/storer/"+cipherQuery.getGraph()+"/"+cipherQuery.getAlgortithm(), httpBodyHeader, String.class);
+		
+		Json json = new Json();
+		json.add("status", status);
+		json.add("response", postStorerResp.getBody());
+		json.add("execTime", timeElapsed.toString());
+		return ResponseEntity.ok(json.toString());
 	}
 
 	@PostMapping(path = "/uploadGraph/Giraph",consumes = MediaType.APPLICATION_JSON_VALUE)

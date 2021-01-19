@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import org.springframework.http.ResponseEntity;
+
 public class Neo4JManager {
 
 	public static String sendQuery(String statment) {
@@ -25,6 +27,18 @@ public class Neo4JManager {
 				"}";
 		
 		return body;
+	}
+
+	public static String responseInterpreter(Long timeElapsed, CipherQuery_Neo4j cipherQuery, ResponseEntity<String> queryRes) {
+		// TODO Auto-generated method stub
+		
+		
+		return "{\n" + 
+				"	\"status\":\""+queryRes.getStatusCodeValue()+"\",\n" + 
+				"	\"execTime\":"+timeElapsed+",\n" + 
+				"	\"platform\":\"Neo4j\",\n" + 
+				"	\"query\":\""+cipherQuery.getQueryInfos()+"\"\n" + 
+				"}";
 	}
 
 }
