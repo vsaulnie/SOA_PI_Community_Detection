@@ -1,5 +1,6 @@
 package insa.sdbd.services.giraph;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import insa.sdbd.services.giraph.hdprocess.GiraphRun;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -34,52 +35,40 @@ public class ComputeController {
 	}
 
 	@GetMapping("/{user}/{graph}/{algorithm}")
-	public ResponseEntity<String> GetResult(@PathVariable String user, @PathVariable String graph, @PathVariable String algorithm) {
+	public ResponseEntity<Results> GetResult(@PathVariable String user, @PathVariable String graph, @PathVariable String algorithm) {
 		Computation computation = new Computation();
 		computation.setUser(user);
 		computation.setGraph(graph);
 		computation.setAlgorithm(algorithm);
-		GiraphRun giraphRun = GiraphRun.FromComputation(computation, BASE_HDFS_DIR);
-		String outputPath = giraphRun.op;
-		String localPath = BASE_RESULTS_DIR + computation.getUser() + "/" + computation.getAlgorithm() + "/" + computation.getGraph() + "/";
-		try {
-			Scanner scan = new Scanner(new FileInputStream(localPath + "report.txt"));
-			String res = "";
-			String line;
-			while (((line = scan.nextLine()) != null)) {
-				res += line + "\n";
+		File localPath = new File(BASE_RESULTS_DIR + computation.getUser() + "/" + computation.getAlgorithm() + "/" + computation.getGraph() + "/results.json");
+		if(localPath.exists()){
+			try {
+				Results res = new ObjectMapper().readValue(localPath,Results.class);
+				return ResponseEntity.ok(res);
+			} catch (IOException e) {
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 			}
-			return ResponseEntity.ok(res.substring(0, res.length() - 1));
-		} catch (FileNotFoundException e) {
+		}
+		else{
 			return ResponseEntity.status(HttpStatus.TOO_EARLY).build();
 		}
-
 	}
 
 	private void writeReportFile(Computation computation, int returnCode, long duration) {
-		File localPath = new File(BASE_RESULTS_DIR + computation.getUser() + "/" + computation.getAlgorithm() + "/" + computation.getGraph() + "/report.txt");
+		File localPath = new File(BASE_RESULTS_DIR + computation.getUser() + "/" + computation.getAlgorithm() + "/" + computation.getGraph() + "/results.json");
 		
 		try {
 			localPath.getParentFile().mkdirs();
-			FileWriter writer = new FileWriter(localPath);
-			String text = "";
-			text += "CODE:" + returnCode + "\n";
-			text += "TIME:" + duration;
-			writer.write(text);
-			writer.flush();
-			writer.close();
-		} catch (Exception e) {
-			try {
-				FileWriter writer = new FileWriter("/user/hduser/err");
-				writer.write(e.toString());
-				writer.flush();
-				writer.close();
-				e.printStackTrace();
-			}
-			catch(IOException ioe){
-				ioe.printStackTrace();
-			}
-
+			Results results = new Results();
+			results.setStatus(String.valueOf(returnCode));
+			results.setExecTime(duration);
+			results.setPlatform("giraph");
+			results.setQuery(computation.getAlgorithm());
+			results.getInfos().put("statusType","returnCode");
+			ObjectMapper mapper = new ObjectMapper();
+			mapper.writeValue(localPath, results);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
