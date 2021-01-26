@@ -31,13 +31,29 @@ The objective is to make a complete comparision of main graph storage and proces
 
 
 ## Sample Graphs
-All graphs can be find in /graphs
-They are found on snap.stanford.edu/mappr/data.html: 
-- email (directed n=1005 ; e=25 571)
-- Amazon (undirected n=334 863 ; e=925 872)
-- Friendster (undirected n=65 608 366 ; e=1 806 067 135)
+All graphs can be find in /graphs  
+They are found on snap.stanford.edu/mappr/data.html:  
+- email (directed n=1005 ; e=25 571)  
+- Amazon (undirected n=334 863 ; e=925 872)  
+- Friendster (undirected n=65 608 366 ; e=1 806 067 135)  
 
 ## Launch commands
+### Obtain all MS
+To get this project, begin by cloning the main branch of this repo :  
+`mkdir main; cd main`  
+`git clone https://github.com/vsaulnie/SOA_PI_Community_Detection.git .`  
+
+Then run the script : getOtherBranches.sh to obtain all MS of the project  
+Open terminal in main/ :   
+`./getOtherBranches.sh`  
+
+### Deploy all MS  
+
+Open terminal in main/ :   
+`./deployAllMS.sh`  
+
+#### WARNING : You need to deploy giraph_infrastructure before deploying all MS 
+See README.md in branch "Giraph_API_MS/infra"
 
 ### Jenkins 
 `java -jar jenkins.war --httpPort=9090`
