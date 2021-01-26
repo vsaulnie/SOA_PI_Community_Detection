@@ -25,6 +25,7 @@ The objective is to make a complete comparision of main graph storage and proces
 7. Display execution results on a frontend  
 
 ## Architecture
+/!\ Branchs Config_Server and Config_Client are not used in this project. Just ignore them.
 
 ![Latest Architecture](https://github.com/vsaulnie/SOA_PI_Community_Detection/blob/main/doc/Architecutre_v2.jpg)
 
